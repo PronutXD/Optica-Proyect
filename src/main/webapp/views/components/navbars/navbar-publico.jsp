@@ -31,10 +31,10 @@
 
             <!-- Acceso / Login -->
             <div class="flex items-center gap-3">
-                <a href="login.jsp" class="text-sm font-medium text-slate-700 hover:text-sky-600 px-3 py-2 transition-colors">
+                <a href="SvNavbarPublico?page=login" class="text-sm font-medium text-slate-700 hover:text-sky-600 px-3 py-2 transition-colors">
                     Iniciar Sesión
                 </a>
-                <a href="registro.jsp" class="text-sm font-medium bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all">
+                <a href="SvNavbarPublico?page=register" class="text-sm font-medium bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all">
                     Registrarse
                 </a>
             </div>
