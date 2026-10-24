@@ -1,35 +1,71 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<section id="servicios" class="py-14 bg-white border-t border-slate-200/60">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-xl mx-auto mb-10">
-            <h2 class="text-2xl font-bold text-slate-900">Nuestros Servicios</h2>
-            <p class="text-slate-500 text-sm mt-1">Soluciones integrales para la salud y cuidado de tu visión</p>
+<section id="servicios" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="reveal max-w-xl mb-12">
+            <p class="text-xs font-medium uppercase tracking-[0.2em] text-sky-600">Salud Visual &amp; Calidad</p>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900 mt-2">Nuestros Servicios</h2>
+            <p class="text-slate-500 text-sm mt-2 leading-relaxed">
+                Todo lo que necesitas para cuidar tu vista, en un solo lugar.
+            </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/80">
-                <div class="w-10 h-10 bg-sky-100 text-sky-600 rounded-lg flex items-center justify-center mb-3">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
+
+            <!-- Examen de la vista -->
+            <div class="reveal">
+                <div class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
                 </div>
-                <h3 class="text-base font-semibold text-slate-800 mb-1">Examen y Medición</h3>
-                <p class="text-slate-600 text-xs leading-relaxed">Evaluación completa de agudeza visual, medición de esfera, cilindro, eje y adición por especialistas.</p>
+                <h3 class="text-sm font-semibold text-slate-800">Examen de la vista</h3>
+                <p class="text-sm text-slate-500 mt-1.5 leading-relaxed">Evaluación visual completa con atención profesional.</p>
             </div>
 
-            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/80">
-                <div class="w-10 h-10 bg-sky-100 text-sky-600 rounded-lg flex items-center justify-center mb-3">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            <!-- Lentes graduados -->
+            <div class="reveal" style="transition-delay: 80ms;">
+                <div class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="6" cy="14" r="3.5" stroke-width="2" />
+                        <circle cx="18" cy="14" r="3.5" stroke-width="2" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 14h5M2.5 14L4 7M21.5 14L20 7" />
+                    </svg>
                 </div>
-                <h3 class="text-base font-semibold text-slate-800 mb-1">Catálogo de Aros</h3>
-                <p class="text-slate-600 text-xs leading-relaxed">Gran variedad de marcas y materiales (acetato, titanio, metal) con diseños ergonómicos y modernos.</p>
+                <h3 class="text-sm font-semibold text-slate-800">Lentes graduados</h3>
+                <p class="text-sm text-slate-500 mt-1.5 leading-relaxed">Lunas adaptadas a tu receta, con filtros UV y antirreflejo.</p>
             </div>
 
-            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/80">
-                <div class="w-10 h-10 bg-sky-100 text-sky-600 rounded-lg flex items-center justify-center mb-3">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+            <!-- Ajuste y reparación -->
+            <div class="reveal" style="transition-delay: 160ms;">
+                <div class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
                 </div>
-                <h3 class="text-base font-semibold text-slate-800 mb-1">Fabricación de Lunas</h3>
-                <p class="text-slate-600 text-xs leading-relaxed">Cristales tallados a medida con tratamientos antirreflejo, filtro azul y protección contra rayos UV.</p>
+                <h3 class="text-sm font-semibold text-slate-800">Ajuste y reparación</h3>
+                <p class="text-sm text-slate-500 mt-1.5 leading-relaxed">Ajuste, limpieza y reparación de armazones.</p>
             </div>
+
+            <!-- Apartados y abonos -->
+            <div class="reveal" style="transition-delay: 240ms;">
+                <div class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </div>
+                <h3 class="text-sm font-semibold text-slate-800">Apartados y abonos</h3>
+                <p class="text-sm text-slate-500 mt-1.5 leading-relaxed">Aparta tu aro favorito y págalo poco a poco.</p>
+            </div>
+
         </div>
+
+        <div class="reveal mt-12">
+            <a href="login.jsp" class="inline-flex items-center bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-6 py-3 rounded-full transition-colors">
+                Agendar Consulta
+            </a>
+        </div>
+
     </div>
 </section>
