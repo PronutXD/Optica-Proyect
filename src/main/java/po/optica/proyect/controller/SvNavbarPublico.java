@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- *
+ * Servlet controlador para la navegación pública de la aplicación.
  * @author User
  */
 @WebServlet(name = "SvNavbarPublico", urlPatterns = {"/SvNavbarPublico"})
@@ -21,20 +21,41 @@ public class SvNavbarPublico extends HttpServlet {
         // Obtenemos el parámetro 'page' enviado desde los enlaces del navbar
         String page = request.getParameter("page");
         
-        if (page == null) {
+        if (page == null || page.trim().isEmpty()) {
             page = "home";
         }
         
-        // Evaluamos qué vista cargar desde Web Pages/views/auth/
+        // Evaluamos qué vista cargar según la sección solicitada
         switch (page) {
+            case "home":
+            case "inicio":
+                response.sendRedirect("index.jsp");
+                break;
+
+            case "catalogo":
+                request.getRequestDispatcher("catalogo.jsp").forward(request, response);
+                break;
+
+            case "servicios":
+                // Vista pendiente de implementar o redirigir
+                request.getRequestDispatcher("servicios.jsp").forward(request, response);
+                break;
+
+            case "contacto":
+                // Vista pendiente de implementar o redirigir
+                request.getRequestDispatcher("contacto.jsp").forward(request, response);
+                break;
+
             case "login":
                 request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
                 break;
+
             case "register":
                 request.getRequestDispatcher("/views/auth/register.jsp").forward(request, response);
                 break;
+
             default:
-                // Si no coincide o es home, redirige a la página principal
+                // Si la ruta no coincide, por defecto enviamos al inicio
                 response.sendRedirect("index.jsp");
                 break;
         }
@@ -43,12 +64,11 @@ public class SvNavbarPublico extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Por ahora las peticiones POST de autenticación las manejaremos aquí o en su propio método
         doGet(request, response);
     }
 
     @Override
     public String getServletInfo() {
-        return "Controlador de navegación pública y autenticación";
+        return "Controlador de navegación pública y ruteo de vistas";
     }
 }

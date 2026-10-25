@@ -1,6 +1,6 @@
 <%-- 
     Document   : navbar-publico
-    Created on : 18 oct 2026, 3:53:17 p.m.
+    Created on : 18 oct 2026, 3:53:17 p.m.
     Author     : User
 --%>
 
@@ -10,7 +10,7 @@
         <div class="flex justify-between items-center h-16">
             
             <!-- Logo / Marca -->
-            <div class="flex items-center gap-3">
+            <a href="SvNavbarPublico?page=home" class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white shadow-md shadow-sky-600/20">
                     <!-- Icono Gafas / Óptica -->
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -19,14 +19,14 @@
                     </svg>
                 </div>
                 <span class="text-xl font-bold text-slate-800 tracking-tight">Óptica<span class="text-sky-600">Vision</span></span>
-            </div>
+            </a>
 
             <!-- Enlaces de Navegación -->
             <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-                <a href="#inicio" class="text-slate-600 hover:text-sky-600 transition-colors">Inicio</a>
-                <a href="#catalogo" class="text-slate-600 hover:text-sky-600 transition-colors">Catálogo</a>
-                <a href="#servicios" class="text-slate-600 hover:text-sky-600 transition-colors">Servicios</a>
-                <a href="#contacto" class="text-slate-600 hover:text-sky-600 transition-colors">Contacto</a>
+                <a href="SvNavbarPublico?page=home" class="text-slate-600 hover:text-sky-600 transition-colors">Inicio</a>
+                <a href="SvNavbarPublico?page=catalogo" class="text-slate-600 hover:text-sky-600 transition-colors">Catálogo</a>
+                <a href="SvNavbarPublico?page=servicios" class="text-slate-600 hover:text-sky-600 transition-colors">Servicios</a>
+                <a href="SvNavbarPublico?page=contacto" class="text-slate-600 hover:text-sky-600 transition-colors">Contacto</a>
             </nav>
 
             <!-- Acceso / Login -->
