@@ -35,6 +35,18 @@
 
             <!-- Componente de Modelos Destacados -->
             <jsp:include page="/views/components/catalogo/destacado.jsp" />
+            
+            <!-- Componente de Categorias Principales -->
+            <jsp:include page="/views/components/catalogo/categorias_principales.jsp" />
+            
+            <!-- Componente de Novedades de la semana -->
+            <jsp:include page="/views/components/catalogo/novedades_semana.jsp" />
+            
+            <!-- Componente de Novedades de la semana -->
+            <jsp:include page="/views/components/catalogo/guia_rostro.jsp" />
+            
+            <!-- Componente de Promociones -->
+            <jsp:include page="/views/components/catalogo/promociones.jsp" />
         </main>
 
         <!-- Pie de Página -->
