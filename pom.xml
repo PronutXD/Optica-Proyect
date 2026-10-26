@@ -6,12 +6,12 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Optica-Proyect-1.0-SNAPSHOT</name>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jakartaee>11.0.0-M1</jakartaee>
+        <jakartaee>10.0.0</jakartaee>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>jakarta.platform</groupId>
@@ -19,8 +19,15 @@
             <version>${jakartaee}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Driver de SQL Server / Azure SQL -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>12.8.1.jre11</version>
+        </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
