@@ -1,4 +1,4 @@
-package po.optica.proyect.controller;
+package controller;
 
 import java.io.IOException;
 import jakarta.servlet.ServletException;
