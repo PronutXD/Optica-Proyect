@@ -20,26 +20,25 @@
 
         <!-- Cabecera -->
         <div class="text-center space-y-2">
-            <a href="index.jsp" class="inline-block text-2xl font-extrabold tracking-tight text-slate-900">
+            <a href="SvNavbarPublico?page=home" class="inline-block text-2xl font-extrabold tracking-tight text-slate-900">
                 Óptica<span class="text-sky-600">Vision</span>
             </a>
             <p class="text-xs text-slate-600 font-medium">Ingresa a tu cuenta para gestionar citas o inventario</p>
         </div>
 
-        <!-- Formulario -->
-        <form action="SvNavbarPublico" method="POST" class="space-y-4">
-            <input type="hidden" name="action" value="login">
+        <!-- Formulario apuntando al Servlet SvLogin -->
+        <form action="SvLogin" method="POST" class="space-y-4">
 
             <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-700 uppercase tracking-wider">Correo o Usuario</label>
-                <input type="text" name="usuario" required 
+                <input type="text" name="correo" required 
                        class="w-full px-3.5 py-2.5 bg-white/50 border border-slate-300/80 rounded-lg text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600 transition-colors"
                        placeholder="ej. admin o correo@dominio.com">
             </div>
 
             <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-700 uppercase tracking-wider">Contraseña</label>
-                <input type="password" name="password" required 
+                <input type="password" name="contrasena" required 
                        class="w-full px-3.5 py-2.5 bg-white/50 border border-slate-300/80 rounded-lg text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600 transition-colors"
                        placeholder="••••••••">
             </div>

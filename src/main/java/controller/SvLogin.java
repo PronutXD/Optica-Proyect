@@ -12,6 +12,7 @@ import dao.ClienteDAO;
 import dao.UsuarioDAO;
 import model.Cliente;
 import model.Usuario;
+import org.mindrot.jbcrypt.BCrypt; // Importación necesaria para verificar el hash
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,16 +30,18 @@ public class SvLogin extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         String correoOUser = request.getParameter("correo");
-        String contrasena = request.getParameter("contrasena");
+        String contrasenaPlana = request.getParameter("contrasena");
 
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         ClienteDAO clienteDAO = new ClienteDAO();
 
-        // 1. Intentar iniciar sesión primero como Empleado / Usuario interno
-        Usuario empleado = usuarioDAO.loginUsuario(correoOUser, contrasena);
+        // 1. Intentar buscar al empleado por correo o nombre de usuario
+        Usuario empleado = usuarioDAO.buscarPorCredencial(correoOUser);
 
-        if (empleado != null) {
-            // Es un empleado válido
+        // Validar si el empleado existe y si su contraseña coincide usando BCrypt
+        if (empleado != null && empleado.getContrasenaHash() != null && 
+            BCrypt.checkpw(contrasenaPlana, empleado.getContrasenaHash())) {
+            
             HttpSession session = request.getSession();
             session.setAttribute("usuarioLogueado", empleado);
             session.setAttribute("tipoUsuario", "empleado");
@@ -48,22 +51,24 @@ public class SvLogin extends HttpServlet {
             return;
         }
 
-        // 2. Si no se encontró en empleados, buscar en la tabla de Clientes
-        Cliente cliente = clienteDAO.loginCliente(correoOUser, contrasena);
+        // 2. Si no se encontró en empleados, buscar en la tabla de Clientes por correo
+        Cliente cliente = clienteDAO.buscarPorCorreo(correoOUser);
 
-        if (cliente != null) {
-            // Es un cliente válido
+        // Validar si el cliente existe y si su contraseña coincide usando BCrypt
+        if (cliente != null && cliente.getContrasena() != null && 
+            BCrypt.checkpw(contrasenaPlana, cliente.getContrasena())) {
+            
             HttpSession session = request.getSession();
             session.setAttribute("usuarioLogueado", cliente);
             session.setAttribute("tipoUsuario", "cliente");
             
-            // Redirigir al catálogo o la página principal del cliente
-            response.sendRedirect("views/cliente/catalogo.jsp");
+            // Redirigir al inicio mediante el servlet controlador de vistas
+            response.sendRedirect("SvNavbarPublico?page=home");
             return;
         }
 
-        // 3. Si en ninguna de las dos tablas coincide, credenciales incorrectas
-        response.sendRedirect("login.jsp?error=credenciales_invalidas");
+        // 3. Si en ninguna de las dos tablas coincide o la contraseña es errónea
+        response.sendRedirect("views/auth/login.jsp?error=credenciales_invalidas");
     }
 
     @Override

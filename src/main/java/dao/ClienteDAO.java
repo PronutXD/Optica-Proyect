@@ -18,7 +18,6 @@ import java.sql.SQLException;
 
 public class ClienteDAO {
 
-    // Método para registrar un nuevo cliente desde la vista pública de registro
     public boolean registrarCliente(Cliente cliente) {
         String sql = "INSERT INTO Cliente (Nombre, Apellido, Identidad, Telefono, Correo, Contrasena, Activo, FechaRegistro) VALUES (?, ?, ?, ?, ?, ?, 1, GETDATE())";
         
@@ -30,7 +29,7 @@ public class ClienteDAO {
             ps.setString(3, cliente.getIdentidad());
             ps.setString(4, cliente.getTelefono());
             ps.setString(5, cliente.getCorreo());
-            ps.setString(6, cliente.getContrasena()); // Idealmente cifrada con BCrypt, o texto plano para pruebas iniciales
+            ps.setString(6, cliente.getContrasena()); // Recibe el hash ya preparado por el controlador de registro
             
             int filasAfectadas = ps.executeUpdate();
             return filasAfectadas > 0;
@@ -41,16 +40,16 @@ public class ClienteDAO {
         }
     }
 
-    // Método para validar el inicio de sesión del cliente por correo y contraseña
-    public Cliente loginCliente(String correo, String contrasena) {
-        String sql = "SELECT * FROM Cliente WHERE Correo = ? AND Contrasena = ? AND Activo = 1";
+    // Método para buscar al cliente únicamente por su correo
+    public Cliente buscarPorCorreo(String correo) {
+        // Quitamos la validación de la contraseña del SQL para que el controlador verifique el hash
+        String sql = "SELECT * FROM Cliente WHERE Correo = ? AND Activo = 1";
         Cliente cliente = null;
         
         try (Connection con = ConexionDB.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             
             ps.setString(1, correo);
-            ps.setString(2, contrasena);
             
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -62,6 +61,7 @@ public class ClienteDAO {
                     cliente.setRtn(rs.getString("RTN"));
                     cliente.setTelefono(rs.getString("Telefono"));
                     cliente.setCorreo(rs.getString("Correo"));
+                    cliente.setContrasena(rs.getString("Contrasena")); // ¡Importante traer el hash guardado!
                     cliente.setFechaNacimiento(rs.getDate("FechaNacimiento"));
                     cliente.setDireccion(rs.getString("Direccion"));
                     cliente.setFechaRegistro(rs.getTimestamp("FechaRegistro"));
@@ -69,9 +69,9 @@ public class ClienteDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error en login de cliente: " + e.getMessage());
+            System.err.println("❌ Error al buscar cliente por correo: " + e.getMessage());
         }
         
-        return cliente; // Retorna null si las credenciales son incorrectas
+        return cliente;
     }
 }

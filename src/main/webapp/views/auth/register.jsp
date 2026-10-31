@@ -20,15 +20,14 @@
         
         <!-- Cabecera -->
         <div class="text-center space-y-2">
-            <a href="index.jsp" class="inline-block text-2xl font-extrabold tracking-tight text-slate-900">
+            <a href="SvNavbarPublico?page=home" class="inline-block text-2xl font-extrabold tracking-tight text-slate-900">
                 Óptica<span class="text-sky-600">Vision</span>
             </a>
             <p class="text-xs text-slate-600 font-medium">Crea tu cuenta de cliente para agendar citas y apartar aros</p>
         </div>
 
-        <!-- Formulario de Registro -->
-        <form action="SvNavbarPublico" method="POST" class="space-y-4">
-            <input type="hidden" name="action" value="register">
+        <!-- Formulario de Registro apuntando al Servlet SvRegistro -->
+        <form action="SvRegistro" method="POST" class="space-y-4">
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
@@ -69,7 +68,7 @@
 
             <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-700 uppercase tracking-wider">Contraseña</label>
-                <input type="password" name="password" required 
+                <input type="password" name="contrasena" required 
                        class="w-full px-3.5 py-2 bg-white/50 border border-slate-300/80 rounded-lg text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                        placeholder="••••••••">
             </div>

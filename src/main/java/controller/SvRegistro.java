@@ -10,6 +10,7 @@ package controller;
  */
 import dao.ClienteDAO;
 import model.Cliente;
+import org.mindrot.jbcrypt.BCrypt; // Importación necesaria para el cifrado con BCrypt
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -31,27 +32,30 @@ public class SvRegistro extends HttpServlet {
         String identidad = request.getParameter("identidad");
         String telefono = request.getParameter("telefono");
         String correo = request.getParameter("correo");
-        String contrasena = request.getParameter("contrasena"); // Recuerda aplicar hash si usas seguridad avanzada
+        String contrasenaPlana = request.getParameter("contrasena");
 
-        // Crear el objeto Cliente con los datos básicos
+        // SEGURIDAD: Hashear la contraseña en el controlador antes de asignarla al modelo
+        String passwordHash = BCrypt.hashpw(contrasenaPlana, BCrypt.gensalt());
+
+        // Crear el objeto Cliente con el hash de la contraseña (nunca en texto plano)
         Cliente cliente = new Cliente();
         cliente.setNombre(nombre);
         cliente.setApellido(apellido);
         cliente.setIdentidad(identidad);
         cliente.setTelefono(telefono);
         cliente.setCorreo(correo);
-        cliente.setContrasena(contrasena);
+        cliente.setContrasena(passwordHash);
 
         // Instanciar el DAO y ejecutar el registro
         ClienteDAO clienteDAO = new ClienteDAO();
         boolean registrado = clienteDAO.registrarCliente(cliente);
 
         if (registrado) {
-            // Redirigir al login o a una página de éxito
-            response.sendRedirect("login.jsp?registro=exitoso");
+            // Redirigir al login con parámetro de éxito
+            response.sendRedirect("views/auth/login.jsp?registro=exitoso");
         } else {
             // Redirigir de vuelta al registro con un mensaje de error
-            response.sendRedirect("registro.jsp?error=falta_datos");
+            response.sendRedirect("views/auth/register.jsp?error=falta_datos");
         }
     }
 

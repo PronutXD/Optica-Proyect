@@ -18,10 +18,10 @@ import java.sql.SQLException;
 
 public class UsuarioDAO {
 
-    // Método para validar el inicio de sesión del empleado (por correo o nombre de usuario)
-    public Usuario loginUsuario(String correoOUser, String contrasena) {
-        // Permite loguearse tanto por su Correo como por su NombreUsuario
-        String sql = "SELECT * FROM Usuario WHERE (Correo = ? OR NombreUsuario = ?) AND ContrasenaHash = ? AND Activo = 1";
+    // Método para buscar al empleado únicamente por correo o nombre de usuario
+    public Usuario buscarPorCredencial(String correoOUser) {
+        // Quitamos la validación de la contraseña del SQL para que el controlador verifique el hash con BCrypt
+        String sql = "SELECT * FROM Usuario WHERE (Correo = ? OR NombreUsuario = ?) AND Activo = 1";
         Usuario usuario = null;
         
         try (Connection con = ConexionDB.getConexion();
@@ -29,7 +29,6 @@ public class UsuarioDAO {
             
             ps.setString(1, correoOUser);
             ps.setString(2, correoOUser);
-            ps.setString(3, contrasena); // Nota: Valida contra ContrasenaHash
             
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -38,7 +37,7 @@ public class UsuarioDAO {
                     usuario.setIdRol(rs.getInt("IdRol"));
                     usuario.setIdSucursal(rs.getInt("IdSucursal"));
                     usuario.setNombreUsuario(rs.getString("NombreUsuario"));
-                    usuario.setContrasenaHash(rs.getString("ContrasenaHash"));
+                    usuario.setContrasenaHash(rs.getString("ContrasenaHash")); // ¡Importante traer el hash!
                     usuario.setNombreCompleto(rs.getString("NombreCompleto"));
                     usuario.setCorreo(rs.getString("Correo"));
                     usuario.setActivo(rs.getBoolean("Activo"));
@@ -46,7 +45,7 @@ public class UsuarioDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error en login de usuario/empleado: " + e.getMessage());
+            System.err.println("❌ Error al buscar usuario/empleado: " + e.getMessage());
         }
         
         return usuario;
