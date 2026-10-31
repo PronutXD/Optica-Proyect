@@ -21,9 +21,17 @@
     <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
 
         <!-- 1. Barra de Navegación (Modularizada mediante include) -->
-        <header>
-            <jsp:include page="/views/components/navbars/navbar-publico.jsp"/>
-        </header>
+        <%
+            String navbarDinamica = (String) request.getAttribute("navbarInyectada");
+            if (navbarDinamica == null || navbarDinamica.trim().isEmpty()) {
+                navbarDinamica = "views/components/navbars/navbar-publico.jsp"; // Fallback de seguridad
+            }
+            try {
+                pageContext.include(navbarDinamica);
+            } catch (Exception e) {
+                out.println("<p style='color:red;'>Error al cargar la barra de navegación: " + e.getMessage() + "</p>");
+            }
+        %>
 
         <!-- 2. Contenido Principal de la Página de Servicios -->
         <main class="flex-grow">
