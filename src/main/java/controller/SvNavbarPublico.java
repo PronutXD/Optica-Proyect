@@ -71,6 +71,15 @@ public class SvNavbarPublico extends HttpServlet {
                 request.getRequestDispatcher("/views/auth/register.jsp").forward(request, response);
                 break;
 
+            // Nuevos casos añadidos para la navegación de agendar y administrar
+            case "agendar":
+                request.getRequestDispatcher("agendar.jsp").forward(request, response);
+                break;
+
+            case "administrar":
+                request.getRequestDispatcher("admin.jsp").forward(request, response);
+                break;
+
             default:
                 request.getRequestDispatcher("index.jsp").forward(request, response);
                 break;
