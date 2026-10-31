@@ -1,9 +1,3 @@
-<%-- 
-    Document   : navbar-cliente
-    Created on : 30 oct 2026, 7:32:42 p.m.
-    Author     : User
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -34,10 +28,14 @@
             <div class="flex items-center gap-3 z-10">
                 <div class="relative group">
                     <button class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all shadow-sm">
-                        <div class="w-8 h-8 rounded-lg bg-sky-600 text-white font-bold text-xs flex items-center justify-center shadow-sm">
-                            ${inicialCliente}
+                        <!-- Inicial del cliente extraída de la sesión -->
+                        <div class="w-8 h-8 rounded-lg bg-sky-600 text-white font-bold text-xs flex items-center justify-center shadow-sm uppercase">
+                            ${not empty sessionScope.usuarioLogueado ? sessionScope.usuarioLogueado.nombre.charAt(0) : ''}
                         </div>
-                        <span class="text-sm font-medium text-slate-700 hidden sm:block">${nombreCliente}</span>
+                        <!-- Nombre del cliente extraído de la sesión -->
+                        <span class="text-sm font-medium text-slate-700 hidden sm:block">
+                            ${sessionScope.usuarioLogueado.nombre}
+                        </span>
                         <svg class="w-4 h-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>

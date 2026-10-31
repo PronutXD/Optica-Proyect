@@ -27,7 +27,7 @@
         </div>
 
         <!-- Formulario apuntando al Servlet SvLogin -->
-        <form action="SvLogin" method="POST" class="space-y-4">
+        <form action="${pageContext.request.contextPath}/SvLogin" method="POST" class="space-y-4">
 
             <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-700 uppercase tracking-wider">Correo o Usuario</label>
