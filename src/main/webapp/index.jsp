@@ -27,7 +27,18 @@
     <body class="bg-slate-100/70 text-slate-700 antialiased min-h-screen flex flex-col justify-between">
 
         <!-- Barra de Navegación Pública -->
-        <%@ include file="/views/components/navbars/navbar-publico.jsp" %>
+        <!-- Barra de Navegación Dinámica Controlada por el Servlet -->
+        <%
+            String navbarDinamica = (String) request.getAttribute("navbarInyectada");
+            if (navbarDinamica == null || navbarDinamica.trim().isEmpty()) {
+                navbarDinamica = "views/components/navbars/navbar-publico.jsp"; // Fallback de seguridad
+            }
+            try {
+                pageContext.include(navbarDinamica);
+            } catch (Exception e) {
+                out.println("<p style='color:red;'>Error al cargar la barra de navegación: " + e.getMessage() + "</p>");
+            }
+        %>
 
         <main>
             <!-- Sección Hero (Con enfoque multimedia / video de fondo preparado) -->
