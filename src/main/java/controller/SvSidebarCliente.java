@@ -36,36 +36,33 @@ public class SvSidebarCliente extends HttpServlet {
             action = "dashboard";
         }
         
-        // En tu SvSidebarCliente.java
-String subvista = "";
+        String subvista = "";
 
-switch (action) {
-    case "dashboard":
-        subvista = "/views/components/agendar/dashboard.jsp";
-        break;
-    case "agendar":
-    case "citas":
-        subvista = "/views/components/agendar/citas.jsp"; // El archivo JSP correspondiente dentro de la carpeta
-        break;
-    case "resultados":
-        subvista = "/views/components/agendar/resultados.jsp";
-        break;
-    case "pedidos":
-        subvista = "/views/cliente/secciones/pedidos.jsp";
-        break;
-    case "facturas":
-        subvista = "/views/cliente/secciones/facturas.jsp";
-        break;
-    default:
-        subvista = "/views/components/agendar/dashboard.jsp";
-        break;
-}
+        // 3. Mapear las acciones manteniendo exactamente tus rutas originales
+        switch (action) {
+            case "dashboard":
+                subvista = "/views/components/agendar/dashboard.jsp";
+                break;
+            case "agendar":
+            case "citas":
+                subvista = "/views/components/agendar/citas.jsp";
+                break;
+            case "resultados":
+                subvista = "/views/components/agendar/resultados.jsp";
+                break;
+            case "facturas":
+                subvista = "/views/components/agendar/facturas.jsp";
+                break;
+            default:
+                subvista = "/views/components/agendar/dashboard.jsp";
+                break;
+        }
 
-// 1. Guardas la subvista que se va a inyectar
-request.setAttribute("vistaActual", subvista);
+        // 4. Guardas la subvista que se va a inyectar
+        request.setAttribute("vistaActual", subvista);
 
-// 2. Rediriges SIEMPRE al contenedor maestro (agendar.jsp)
-request.getRequestDispatcher("/agendar.jsp").forward(request, response);    
+        // 5. Rediriges al contenedor maestro (agendar.jsp)
+        request.getRequestDispatcher("/agendar.jsp").forward(request, response);    
     }
 
     @Override

@@ -5,6 +5,16 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    // Verificar directamente la sesión para determinar el navbar correcto de forma automática
+    HttpSession sesionActual = request.getSession(false);
+    boolean clienteAutenticado = (sesionActual != null && sesionActual.getAttribute("usuarioLogueado") != null);
+    
+    // Seleccionar la ruta del navbar según el estado de autenticación
+    String navbarDinamica = clienteAutenticado 
+        ? "/views/components/navbars/navbar-cliente.jsp" 
+        : "views/components/navbars/navbar-publico.jsp";
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,12 +25,8 @@
 </head>
 <body class="bg-slate-50 text-slate-800">
     
-    <%-- 1. Navbar Superior --%>
+    <%-- 1. Navbar Superior Condicional por Sesión --%>
     <%
-        String navbarDinamica = (String) request.getAttribute("navbarInyectada");
-        if (navbarDinamica == null || navbarDinamica.trim().isEmpty()) {
-            navbarDinamica = "views/components/navbars/navbar-publico.jsp";
-        }
         try {
             pageContext.include(navbarDinamica);
         } catch (Exception e) {
@@ -35,17 +41,17 @@
 
         <!-- 3. Contenedor Dinámico de Subvistas -->
         <main class="flex-1 p-8 overflow-y-auto">
-    <div class="max-w-6xl mx-auto">
-        <%-- Bloque seguro: si el servlet no envió vistaActual, carga el dashboard por defecto --%>
-        <%
-            String subvista = (String) request.getAttribute("vistaActual");
-            if (subvista == null || subvista.trim().isEmpty()) {
-                subvista = "/views/components/agendar/dashboard.jsp";
-            }
-        %>
-        <jsp:include page="<%= subvista %>" />
-    </div>
-</main>
+            <div class="max-w-6xl mx-auto">
+                <%-- Bloque seguro: si el servlet no envió vistaActual, carga el dashboard por defecto --%>
+                <%
+                    String subvista = (String) request.getAttribute("vistaActual");
+                    if (subvista == null || subvista.trim().isEmpty()) {
+                        subvista = "/views/components/agendar/dashboard.jsp";
+                    }
+                %>
+                <jsp:include page="<%= subvista %>" />
+            </div>
+        </main>
 
     </div>
         

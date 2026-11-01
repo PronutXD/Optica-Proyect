@@ -4,6 +4,10 @@
     Author     : User
 --%>
 
+<%-- 
+    Document   : sidebar-cliente
+    Description: Sidebar de navegación unificado para el panel del cliente.
+--%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <aside class="w-64 bg-white border-r border-slate-200 min-h-screen flex flex-col justify-between shadow-sm">
@@ -42,7 +46,7 @@
                 Gestionar Citas
             </a>
 
-            <!-- 3. Ver Resultados -->
+            <!-- 3. Resultados Ópticos -->
             <a href="${pageContext.request.contextPath}/SvSidebarCliente?action=resultados" 
                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-600 transition-colors">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,27 +55,18 @@
                 Resultados Ópticos
             </a>
 
-            <!-- 4. Pedidos de Lentes -->
-            <a href="${pageContext.request.contextPath}/SvPanelCliente?action=pedidos" 
-               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-600 transition-colors">
-                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-                Pedidos de Lentes
-            </a>
-
-            <!-- 5. Facturas -->
-            <a href="${pageContext.request.contextPath}/SvPanelCliente?action=facturas" 
+            <!-- 4. Facturas y Comprobantes (Módulo unificado) -->
+            <a href="${pageContext.request.contextPath}/SvSidebarCliente?action=facturas" 
                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-600 transition-colors">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                 </svg>
-                Facturas
+                Facturas y Comprobantes
             </a>
         </nav>
     </div>
 
-    <!-- Parte Inferior: Volver al Inicio o Salir -->
+    <!-- Parte Inferior: Volver al Sitio Principal -->
     <div class="p-6 border-t border-slate-200">
         <a href="${pageContext.request.contextPath}/SvNavbarPublico?page=home" 
            class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors">
