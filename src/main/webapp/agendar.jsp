@@ -1,6 +1,6 @@
 <%-- 
     Document   : agendar
-    Created on : 31 oct 2026, 12:02:05 a.m.
+    Created on : 31 oct 2026, 12:02:05 a.m.
     Author     : User
 --%>
 
@@ -15,36 +15,44 @@
 </head>
 <body class="bg-slate-50 text-slate-800">
     
+    <%-- 1. Navbar Superior --%>
     <%
-            String navbarDinamica = (String) request.getAttribute("navbarInyectada");
-            if (navbarDinamica == null || navbarDinamica.trim().isEmpty()) {
-                navbarDinamica = "views/components/navbars/navbar-publico.jsp"; // Fallback de seguridad
-            }
-            try {
-                pageContext.include(navbarDinamica);
-            } catch (Exception e) {
-                out.println("<p style='color:red;'>Error al cargar la barra de navegación: " + e.getMessage() + "</p>");
-            }
-        %>
+        String navbarDinamica = (String) request.getAttribute("navbarInyectada");
+        if (navbarDinamica == null || navbarDinamica.trim().isEmpty()) {
+            navbarDinamica = "views/components/navbars/navbar-publico.jsp";
+        }
+        try {
+            pageContext.include(navbarDinamica);
+        } catch (Exception e) {
+            out.println("<p style='color:red;'>Error al cargar la barra: " + e.getMessage() + "</p>");
+        }
+    %>
 
     <div class="flex min-h-screen">
         
-        <!-- Componente 1: Sidebar Fijo -->
+        <!-- 2. Sidebar Fijo -->
         <jsp:include page="/views/components/sidebars/sidebar-cliente.jsp" />
 
-        <!-- Componente 2: Contenedor Dinámico de Subvistas -->
+        <!-- 3. Contenedor Dinámico de Subvistas -->
         <main class="flex-1 p-8 overflow-y-auto">
-            <div class="max-w-6xl mx-auto">
-                
-            </div>
-        </main>
+    <div class="max-w-6xl mx-auto">
+        <%-- Bloque seguro: si el servlet no envió vistaActual, carga el dashboard por defecto --%>
+        <%
+            String subvista = (String) request.getAttribute("vistaActual");
+            if (subvista == null || subvista.trim().isEmpty()) {
+                subvista = "/views/components/agendar/dashboard.jsp";
+            }
+        %>
+        <jsp:include page="<%= subvista %>" />
+    </div>
+</main>
 
     </div>
-            
+        
+    <!-- 4. Footer -->
     <footer class="mt-12">
-            <jsp:include page="/views/components/footer.jsp" />
+        <jsp:include page="/views/components/footer.jsp" />
     </footer>
-      
 
 </body>
 </html>

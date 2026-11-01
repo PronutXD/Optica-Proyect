@@ -25,7 +25,7 @@
         <!-- Enlaces de Navegación del Cliente -->
         <nav class="space-y-1.5 text-sm font-medium">
             <!-- 1. Dashboard Principal -->
-            <a href="${pageContext.request.contextPath}/SvPanelCliente?action=dashboard" 
+            <a href="${pageContext.request.contextPath}/SvSidebarCliente?action=dashboard" 
                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-600 transition-colors">
                 <svg class="w-5 h-5 text-slate-400 group-hover:text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -34,7 +34,7 @@
             </a>
 
             <!-- 2. Gestionar Citas -->
-            <a href="${pageContext.request.contextPath}/SvPanelCliente?action=citas" 
+            <a href="${pageContext.request.contextPath}/SvSidebarCliente?action=citas" 
                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-600 transition-colors">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
