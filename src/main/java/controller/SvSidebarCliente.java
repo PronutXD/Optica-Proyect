@@ -45,10 +45,10 @@ switch (action) {
         break;
     case "agendar":
     case "citas":
-        subvista = "/views/components/agendar/tu-vista-de-citas.jsp"; // El archivo JSP correspondiente dentro de la carpeta
+        subvista = "/views/components/agendar/citas.jsp"; // El archivo JSP correspondiente dentro de la carpeta
         break;
     case "resultados":
-        subvista = "/views/cliente/secciones/resultados.jsp";
+        subvista = "/views/components/agendar/resultados.jsp";
         break;
     case "pedidos":
         subvista = "/views/cliente/secciones/pedidos.jsp";
