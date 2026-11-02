@@ -39,7 +39,7 @@
             </a>
 
             <!-- 2. Sección: Citas y Atención Visual (Usa vw_CitasDetalle / vw_ExamenesDetalle) -->
-            <a href="${pageContext.request.contextPath}/SvAdmin?action=citas" 
+            <a href="${pageContext.request.contextPath}/SvSidebarAdmin?action=citas" 
                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -48,7 +48,7 @@
             </a>
 
             <!-- 3. Sección: Inventario y Catálogo (Usa vw_InventarioDetalle / vw_StockBajo) -->
-            <a href="${pageContext.request.contextPath}/SvAdmin?action=inventario" 
+            <a href="${pageContext.request.contextPath}/SvSidebarAdmin?action=inventario" 
                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -57,7 +57,7 @@
             </a>
 
             <!-- 4. Sección: Ventas y Facturación (Usa vw_SaldoVentas) -->
-            <a href="${pageContext.request.contextPath}/SvAdmin?action=ventas" 
+            <a href="${pageContext.request.contextPath}/SvSidebarAdmin?action=ventas" 
                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
@@ -66,7 +66,7 @@
             </a>
 
             <!-- 5. Sección: Personal, Roles y Sucursales (Usa vw_UsuariosSistema) -->
-            <a href="${pageContext.request.contextPath}/SvAdmin?action=usuarios" 
+            <a href="${pageContext.request.contextPath}/SvSidebarAdmin?action=usuarios" 
                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
