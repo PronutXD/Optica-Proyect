@@ -10,7 +10,6 @@
         <maven.compiler.release>26</maven.compiler.release>
         <exec.mainClass>com.mycompany.sistemaempleados.SistemaEmpleados</exec.mainClass>
     </properties>
-=======
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -65,5 +64,4 @@
             </plugin>
         </plugins>
     </build>
->>>>>>> 4f2cd4b3ad43faddf9c675ed6d78d63ced99d183
 </project>
