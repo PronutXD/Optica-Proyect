@@ -28,7 +28,7 @@
                 <a href="SvNavbarPublico?page=catalogo" class="text-slate-600 hover:text-sky-600 transition-colors">Catálogo</a>
                 <a href="SvNavbarPublico?page=servicios" class="text-slate-600 hover:text-sky-600 transition-colors">Servicios</a>
                 <a href="SvNavbarPublico?page=contacto" class="text-slate-600 hover:text-sky-600 transition-colors">Contacto</a>
-                <a href="SvNavbarPublico?page=admin" class="text-slate-600 hover:text-sky-600 transition-colors font-semibold text-sky-600">Administrar</a>
+                <a href="SvNavbarPublico?page=administrar" class="text-slate-600 hover:text-sky-600 transition-colors font-semibold text-sky-600">Administrar</a>
             </nav>
 
             <!-- Perfil del Empleado (Derecha) -->
