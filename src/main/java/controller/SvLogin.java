@@ -47,7 +47,7 @@ public class SvLogin extends HttpServlet {
             session.setAttribute("tipoUsuario", "empleado");
             
             // Redirigir al panel de administración o dashboard interno
-            response.sendRedirect("views/admin/dashboard.jsp");
+            response.sendRedirect("SvNavbarPublico?page=home");
             return;
         }
 
