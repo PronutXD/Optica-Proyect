@@ -14,9 +14,11 @@ import jakarta.servlet.http.HttpSession;
 import model.CitaDetalle;
 import model.InventarioDetalle;
 import model.VentaSaldo;
+import model.UsuarioSistema;
 import dao.CitaDAO;
 import dao.InventarioDAO;
 import dao.VentaDAO;
+import dao.UsuarioSistemaDAO;
 import java.util.List;
 
 /**
@@ -84,6 +86,14 @@ public class SvSidebarAdmin extends HttpServlet {
                 subvista = "/views/components/admin/ventas.jsp";
                 break;
             case "usuarios":
+                try {
+                        UsuarioSistemaDAO usuarioDao = new UsuarioSistemaDAO();
+                        List<UsuarioSistema> listaUsuarios = usuarioDao.listarUsuariosSistema();
+                        request.setAttribute("listaUsuarios", listaUsuarios);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        request.setAttribute("listaUsuarios", new java.util.ArrayList<>());
+                    }
                 subvista = "/views/components/admin/usuarios.jsp";
                 break;
             default:

@@ -9,6 +9,40 @@
     Description: Subvista de gestión de personal, roles y sucursales basada en vw_UsuariosSistema.
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.List, java.util.Set, java.util.LinkedHashSet, model.UsuarioSistema"%>
+
+<%!
+    // Escapa HTML para evitar que datos de la BD rompan la página
+    private static String esc(String s) {
+        if (s == null) return "";
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                .replace("\"", "&quot;").replace("'", "&#39;");
+    }
+
+    // Color del badge según el rol (cualquier rol nuevo sale en gris)
+    private static String rolClase(String rol) {
+        if (rol == null) return "bg-slate-100 text-slate-700 border-slate-200";
+        switch (rol.trim().toLowerCase()) {
+            case "administrador": return "bg-purple-100 text-purple-700 border-purple-200";
+            case "optometrista":  return "bg-sky-100 text-sky-700 border-sky-200";
+            case "vendedor":      return "bg-indigo-100 text-indigo-700 border-indigo-200";
+            default:              return "bg-slate-100 text-slate-700 border-slate-200";
+        }
+    }
+%>
+<%
+    // Lista enviada por SvSidebarAdmin (case "usuarios")
+    @SuppressWarnings("unchecked")
+    List<UsuarioSistema> listaUsuarios = (List<UsuarioSistema>) request.getAttribute("listaUsuarios");
+
+    // Roles distintos para llenar el filtro con los datos reales
+    Set<String> roles = new LinkedHashSet<>();
+    if (listaUsuarios != null) {
+        for (UsuarioSistema u : listaUsuarios) {
+            if (u.getRol() != null) roles.add(u.getRol());
+        }
+    }
+%>
 
 <!-- Estilos para DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -39,17 +73,14 @@
     <!-- 2. Tabla Completa de Usuarios del Sistema -->
     <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
         
-        <!-- Cabecera y Filtros -->
         <div class="flex flex-col gap-4 border-b border-slate-100 pb-5">
             <div>
                 <h2 class="text-base font-bold text-slate-800">Listado del Personal</h2>
                 <p class="text-xs text-slate-500 mt-0.5">Administra los permisos de los usuarios activos y su vinculación operativa con las sucursales.</p>
             </div>
             
-            <!-- Barra de controles unificada -->
             <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50/70 p-3 rounded-2xl border border-slate-200/60">
                 
-                <!-- Selector de cantidad de registros -->
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-slate-500 font-medium">Mostrar:</span>
                     <select id="customPageLength" class="h-9 px-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all">
@@ -60,7 +91,6 @@
                     <span class="text-xs text-slate-500 font-medium">registros</span>
                 </div>
 
-                <!-- Buscador y Filtro -->
                 <div class="flex flex-wrap items-center gap-2.5">
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
@@ -72,12 +102,13 @@
                                class="w-48 sm:w-60 h-9 pl-9 pr-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all">
                     </div>
 
+                    <!-- Filtro de rol generado con los datos reales -->
                     <div>
                         <select id="filtroRol" class="h-9 px-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all">
                             <option value="">Todos los Roles</option>
-                            <option value="Administrador">Administrador</option>
-                            <option value="Optometrista">Optometrista</option>
-                            <option value="Vendedor">Vendedor</option>
+                            <% for (String r : roles) { %>
+                            <option value="<%= esc(r) %>"><%= esc(r) %></option>
+                            <% } %>
                         </select>
                     </div>
                 </div>
@@ -100,67 +131,45 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    <!-- Fila de Ejemplo 1 (Aquí iterarás con tu bucle Java basado en vw_UsuariosSistema) -->
+                <%
+                    if (listaUsuarios != null) {
+                        for (UsuarioSistema u : listaUsuarios) {
+                %>
                     <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="p-3.5 font-bold text-slate-800">#01</td>
+                        <td class="p-3.5 font-bold text-slate-800" data-order="<%= u.getIdUsuario() %>">#<%= String.format("%02d", u.getIdUsuario()) %></td>
                         <td class="p-3.5">
-                            <p class="font-medium text-slate-800">Dr. Administrador Principal</p>
-                            <p class="text-[10px] text-slate-400">admin_system</p>
+                            <p class="font-medium text-slate-800"><%= esc(u.getNombreCompleto()) %></p>
+                            <p class="text-[10px] text-slate-400"><%= esc(u.getNombreUsuario()) %></p>
                         </td>
-                        <td class="p-3.5 text-slate-600">admin@opticavision.com</td>
+                        <td class="p-3.5 text-slate-600"><%= esc(u.getCorreo()) %></td>
                         <td class="p-3.5">
-                            <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">
-                                Administrador
+                            <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold border <%= rolClase(u.getRol()) %>">
+                                <%= esc(u.getRol()) %>
                             </span>
                         </td>
-                        <td class="p-3.5 text-slate-600">Sucursal Principal</td>
+                        <td class="p-3.5 text-slate-600"><%= esc(u.getSucursal()) %></td>
                         <td class="p-3.5 text-center">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                Activo
-                            </span>
+                            <% if (u.isActivo()) { %>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">Activo</span>
+                            <% } else { %>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200">Inactivo</span>
+                            <% } %>
                         </td>
                         <td class="p-3.5 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <button title="Editar usuario" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+                                <button type="button" title="Editar usuario" data-id="<%= u.getIdUsuario() %>" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 </button>
-                                <button title="Cambiar Estado" class="p-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors cursor-pointer">
+                                <button type="button" title="<%= u.isActivo() ? "Desactivar usuario" : "Activar usuario" %>" data-id="<%= u.getIdUsuario() %>" class="p-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
                                 </button>
                             </div>
                         </td>
                     </tr>
-                    
-                    <!-- Fila de Ejemplo 2 -->
-                    <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="p-3.5 font-bold text-slate-800">#02</td>
-                        <td class="p-3.5">
-                            <p class="font-medium text-slate-800">Lic. Optometrista Óptica</p>
-                            <p class="text-[10px] text-slate-400">optometrista1</p>
-                        </td>
-                        <td class="p-3.5 text-slate-600">optica@opticavision.com</td>
-                        <td class="p-3.5">
-                            <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-100 text-sky-700 border border-sky-200">
-                                Optometrista
-                            </span>
-                        </td>
-                        <td class="p-3.5 text-slate-600">Sucursal Norte</td>
-                        <td class="p-3.5 text-center">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                Activo
-                            </span>
-                        </td>
-                        <td class="p-3.5 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <button title="Editar usuario" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                </button>
-                                <button title="Cambiar Estado" class="p-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors cursor-pointer">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                <%
+                        }
+                    }
+                %>
                 </tbody>
             </table>
         </div>
@@ -190,27 +199,25 @@
             }
         });
 
-        // Buscador sincronizado
         $('#customSearch').on('keyup', function() {
             table.search(this.value).draw();
         });
 
-        // Filtro por Rol en la columna correspondiente (índice 3)
+        // Filtro por Rol (columna 3), coincidencia exacta con regex escapado
         $('#filtroRol').on('change', function() {
             var val = $(this).val();
-            table.column(3).search(val, false, false).draw();
+            var esc = val ? $.fn.dataTable.util.escapeRegex(val) : '';
+            table.column(3).search(val ? '^\\s*' + esc + '\\s*$' : '', true, false).draw();
         });
 
-        // Selector de cantidad de registros por página
         $('#customPageLength').on('change', function() {
             table.page.len(parseInt($(this).val())).draw();
         });
 
-        // Renderizado dinámico de la barra inferior con Tailwind
         function renderPagination() {
             var info = table.page.info();
-            var infoText = "Mostrando del " + (info.recordsTotal === 0 ? 0 : (info.start + 1)) + 
-                           " al " + info.end + " de un total de " + info.recordsTotal + " usuarios";
+            var infoText = "Mostrando del " + (info.recordsDisplay === 0 ? 0 : (info.start + 1)) + 
+                           " al " + info.end + " de un total de " + info.recordsDisplay + " usuarios";
             $('#tableInfo').text(infoText);
 
             var paginationHtml = '';
@@ -239,8 +246,7 @@
         renderPagination();
 
         $(document).on('click', '.page-number', function() {
-            var pageIndex = $(this).data('page');
-            table.page(pageIndex).draw('page');
+            table.page($(this).data('page')).draw('page');
         });
         $(document).on('click', '#btnPrev', function() {
             table.page('previous').draw('page');
