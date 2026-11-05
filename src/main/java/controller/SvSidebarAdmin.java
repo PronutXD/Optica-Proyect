@@ -11,6 +11,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.CitaDetalle;
+import dao.CitaDAO;
+import java.util.List;
 
 /**
  * Servlet controlador para gestionar la navegación interna del panel y sidebar de administración.
@@ -44,8 +47,16 @@ public class SvSidebarAdmin extends HttpServlet {
                 subvista = "/views/components/admin/dashboard.jsp";
                 break;
             case "citas":
-                subvista = "/views/components/admin/citas.jsp";
-                break;
+                try {
+                        CitaDAO citaDao = new CitaDAO();
+                        List<CitaDetalle> listaCitas = citaDao.listarCitasDetalle();
+                        request.setAttribute("listaCitas", listaCitas);
+                    } catch (Exception e) {
+                        e.printStackTrace(); // Muestra el error exacto en la consola de NetBeans
+                        request.setAttribute("listaCitas", new java.util.ArrayList<>()); // Evita nulos
+                    }
+    subvista = "/views/components/admin/citas.jsp";
+    break;
             case "inventario":
                 subvista = "/views/components/admin/inventario.jsp";
                 break;

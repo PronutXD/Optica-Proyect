@@ -3,6 +3,35 @@
     Description: Subvista de gestión y control de citas para el panel de administración basada en vw_CitasDetalle.
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.List, java.text.SimpleDateFormat, model.CitaDetalle"%>
+
+<%!
+    // Escapa HTML para evitar que datos de la BD rompan la página (o inyecten scripts)
+    private static String esc(String s) {
+        if (s == null) return "";
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                .replace("\"", "&quot;").replace("'", "&#39;");
+    }
+
+    // Clases del badge según el estado real de la BD
+    private static String badgeClase(String estado) {
+        if (estado == null) return "bg-slate-100 text-slate-700 border-slate-200";
+        switch (estado.trim().toLowerCase()) {
+            case "pendiente":  return "bg-amber-100 text-amber-700 border-amber-200";
+            case "confirmada": return "bg-sky-100 text-sky-700 border-sky-200";
+            case "atendida":
+            case "completada": return "bg-emerald-100 text-emerald-700 border-emerald-200";
+            case "cancelada":  return "bg-rose-100 text-rose-700 border-rose-200";
+            default:           return "bg-slate-100 text-slate-700 border-slate-200";
+        }
+    }
+%>
+<%
+    // Lista enviada por SvSidebarAdmin (case "citas")
+    @SuppressWarnings("unchecked")
+    List<CitaDetalle> listaCitas = (List<CitaDetalle>) request.getAttribute("listaCitas");
+    SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+%>
 
 <!-- Estilos para DataTables (remueve bordes nativos innecesarios) -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -33,17 +62,14 @@
     <!-- 2. Tabla Completa de Administración de Citas -->
     <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
         
-        <!-- Cabecera de la sección y Filtros perfectamente alineados -->
         <div class="flex flex-col gap-4 border-b border-slate-100 pb-5">
             <div>
                 <h2 class="text-base font-bold text-slate-800">Listado General de Citas</h2>
                 <p class="text-xs text-slate-500 mt-0.5">Filtra, busca y administra las atenciones médicas y ópticas programadas en el sistema.</p>
             </div>
             
-            <!-- Barra de controles unificada con diseño limpio -->
             <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50/70 p-3 rounded-2xl border border-slate-200/60">
                 
-                <!-- Izquierda: Selector de cantidad de registros -->
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-slate-500 font-medium">Mostrar:</span>
                     <select id="customPageLength" class="h-9 px-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all">
@@ -54,9 +80,7 @@
                     <span class="text-xs text-slate-500 font-medium">registros</span>
                 </div>
 
-                <!-- Derecha: Buscador y Filtro de Estado agrupados -->
                 <div class="flex flex-wrap items-center gap-2.5">
-                    <!-- Buscador -->
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,12 +91,13 @@
                                class="w-48 sm:w-60 h-9 pl-9 pr-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all">
                     </div>
 
-                    <!-- Filtro por Estado -->
+                    <!-- Filtro por Estado (valores reales de la BD) -->
                     <div>
                         <select id="filtroEstado" class="h-9 px-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all">
                             <option value="">Todos los Estados</option>
                             <option value="Pendiente">Pendiente</option>
-                            <option value="Completada">Completada</option>
+                            <option value="Confirmada">Confirmada</option>
+                            <option value="Atendida">Atendida</option>
                             <option value="Cancelada">Cancelada</option>
                         </select>
                     </div>
@@ -97,55 +122,48 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    <!-- Fila de Ejemplo 1 (Aquí irá tu bucle Java con los datos de vw_CitasDetalle) -->
+                <%
+                    if (listaCitas != null) {
+                        for (CitaDetalle c : listaCitas) {
+                            String estado = c.getEstado() == null ? "" : c.getEstado().trim();
+                            // Solo se puede completar si aún no fue atendida ni cancelada
+                            boolean puedeCompletar = !(estado.equalsIgnoreCase("Atendida")
+                                    || estado.equalsIgnoreCase("Completada")
+                                    || estado.equalsIgnoreCase("Cancelada"));
+                %>
                     <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="p-3.5 font-bold text-slate-800">#101</td>
-                        <td class="p-3.5">02/11/2026 10:00 AM</td>
-                        <td class="p-3.5 font-medium text-slate-800">Carlos Martínez</td>
-                        <td class="p-3.5">Examen de la Vista</td>
-                        <td class="p-3.5 text-slate-600">Dr. Admin2</td>
-                        <td class="p-3.5 text-slate-600">Sucursal Principal</td>
+                        <td class="p-3.5 font-bold text-slate-800">#<%= c.getIdCita() %></td>
+                        <td class="p-3.5"><%= c.getFechaHora() != null ? fmt.format(c.getFechaHora()) : "—" %></td>
+                        <td class="p-3.5 font-medium text-slate-800"><%= esc(c.getNombreCliente()) %></td>
+                        <td class="p-3.5"><%= esc(c.getNombreServicio()) %></td>
+                        <td class="p-3.5 text-slate-600"><%= esc(c.getNombreOptometrista()) %></td>
+                        <td class="p-3.5 text-slate-600"><%= esc(c.getNombreSucursal()) %></td>
                         <td class="p-3.5">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
-                                Pendiente
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border <%= badgeClase(estado) %>">
+                                <%= esc(estado) %>
                             </span>
                         </td>
                         <td class="p-3.5 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <button title="Completar cita" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+                                <% if (puedeCompletar) { %>
+                                <button type="button" title="Completar cita" data-id="<%= c.getIdCita() %>" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                 </button>
-                                <button title="Ver detalles" class="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors cursor-pointer">
+                                <% } else { %>
+                                <button type="button" title="<%= estado.equalsIgnoreCase("Cancelada") ? "Cancelada" : "Atendido" %>" class="p-1.5 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed" disabled>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                </button>
+                                <% } %>
+                                <button type="button" title="Ver detalles" data-id="<%= c.getIdCita() %>" class="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </button>
                             </div>
                         </td>
                     </tr>
-                    
-                    <!-- Fila de Ejemplo 2 -->
-                    <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="p-3.5 font-bold text-slate-800">#102</td>
-                        <td class="p-3.5">02/11/2026 11:30 AM</td>
-                        <td class="p-3.5 font-medium text-slate-800">Ana Sofía Pineda</td>
-                        <td class="p-3.5">Adaptación de Lentes</td>
-                        <td class="p-3.5 text-slate-600">Dr. Admin2</td>
-                        <td class="p-3.5 text-slate-600">Sucursal Principal</td>
-                        <td class="p-3.5">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                Completada
-                            </span>
-                        </td>
-                        <td class="p-3.5 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <button title="Atendido" class="p-1.5 rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed" disabled>
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                </button>
-                                <button title="Ver detalles" class="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors cursor-pointer">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                <%
+                        }
+                    }
+                %>
                 </tbody>
             </table>
         </div>
@@ -169,33 +187,31 @@
         var table = $('#tablaGestionCitas').DataTable({
             dom: 'rt',
             pageLength: 5,
+            order: [[0, 'desc']],
             language: {
                 emptyTable: "No hay citas registradas",
                 zeroRecords: "No se encontraron registros coincidentes"
             }
         });
 
-        // Buscador sincronizado
         $('#customSearch').on('keyup', function() {
             table.search(this.value).draw();
         });
 
-        // Filtro por Estado en la columna correspondiente (índice 6)
+        // Filtro por Estado (columna índice 6), coincidencia exacta
         $('#filtroEstado').on('change', function() {
             var val = $(this).val();
-            table.column(6).search(val, false, false).draw();
+            table.column(6).search(val ? '^\\s*' + val + '\\s*$' : '', true, false).draw();
         });
 
-        // Selector de cantidad de registros por página
         $('#customPageLength').on('change', function() {
             table.page.len(parseInt($(this).val())).draw();
         });
 
-        // Renderizado dinámico de la barra inferior con Tailwind
         function renderPagination() {
             var info = table.page.info();
-            var infoText = "Mostrando del " + (info.recordsTotal === 0 ? 0 : (info.start + 1)) + 
-                           " al " + info.end + " de un total de " + info.recordsTotal + " citas registradas";
+            var infoText = "Mostrando del " + (info.recordsDisplay === 0 ? 0 : (info.start + 1)) + 
+                           " al " + info.end + " de un total de " + info.recordsDisplay + " citas registradas";
             $('#tableInfo').text(infoText);
 
             var paginationHtml = '';
@@ -224,8 +240,7 @@
         renderPagination();
 
         $(document).on('click', '.page-number', function() {
-            var pageIndex = $(this).data('page');
-            table.page(pageIndex).draw('page');
+            table.page($(this).data('page')).draw('page');
         });
         $(document).on('click', '#btnPrev', function() {
             table.page('previous').draw('page');
