@@ -9,6 +9,61 @@
     Description: Subvista de control de ventas, facturación y saldos pendientes basada en vw_SaldoVentas.
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.List, java.util.Locale, java.util.Set, java.util.LinkedHashSet, java.text.SimpleDateFormat, model.VentaSaldo"%>
+
+<%!
+    // Escapa HTML para evitar que datos de la BD rompan la página
+    private static String esc(String s) {
+        if (s == null) return "";
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                .replace("\"", "&quot;").replace("'", "&#39;");
+    }
+
+    // Formato de moneda: L. 2,450.00
+    private static String lempiras(double monto) {
+        return String.format(Locale.US, "L. %,.2f", monto);
+    }
+
+    // Clases del badge según el estado de la venta (cualquier valor desconocido sale en gris)
+    private static String badgeClase(String estado) {
+        if (estado == null) return "bg-slate-100 text-slate-700 border-slate-200";
+        switch (estado.trim().toLowerCase()) {
+            case "pagado":
+            case "pagada":
+            case "completada":
+            case "completado":
+            case "cancelado":   // saldo cancelado = pagado en muchos sistemas; ajusta si no aplica
+                return "bg-emerald-100 text-emerald-700 border-emerald-200";
+            case "pendiente":
+            case "apartado":
+            case "activa":
+            case "activo":
+                return "bg-amber-100 text-amber-700 border-amber-200";
+            case "anulada":
+            case "anulado":
+            case "cancelada":
+            case "vencido":
+            case "vencida":
+                return "bg-rose-100 text-rose-700 border-rose-200";
+            default:
+                return "bg-slate-100 text-slate-700 border-slate-200";
+        }
+    }
+%>
+<%
+    // Lista enviada por SvSidebarAdmin (case "ventas")
+    @SuppressWarnings("unchecked")
+    List<VentaSaldo> listaVentas = (List<VentaSaldo>) request.getAttribute("listaVentas");
+    SimpleDateFormat fmtFecha = new SimpleDateFormat("dd/MM/yyyy");
+
+    // Tipos de venta distintos para llenar el filtro con los datos reales
+    Set<String> tipos = new LinkedHashSet<>();
+    if (listaVentas != null) {
+        for (VentaSaldo v : listaVentas) {
+            if (v.getTipo() != null) tipos.add(v.getTipo());
+        }
+    }
+%>
 
 <!-- Estilos para DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -39,17 +94,14 @@
     <!-- 2. Tabla Completa de Ventas y Finanzas -->
     <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
         
-        <!-- Cabecera y Filtros -->
         <div class="flex flex-col gap-4 border-b border-slate-100 pb-5">
             <div>
                 <h2 class="text-base font-bold text-slate-800">Historial de Transacciones</h2>
                 <p class="text-xs text-slate-500 mt-0.5">Monitorea el total facturado, los abonos realizados y los saldos pendientes de los clientes.</p>
             </div>
             
-            <!-- Barra de controles unificada -->
             <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50/70 p-3 rounded-2xl border border-slate-200/60">
                 
-                <!-- Selector de cantidad de registros -->
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-slate-500 font-medium">Mostrar:</span>
                     <select id="customPageLength" class="h-9 px-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all">
@@ -60,7 +112,6 @@
                     <span class="text-xs text-slate-500 font-medium">registros</span>
                 </div>
 
-                <!-- Buscador y Filtro -->
                 <div class="flex flex-wrap items-center gap-2.5">
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
@@ -72,11 +123,13 @@
                                class="w-48 sm:w-60 h-9 pl-9 pr-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all">
                     </div>
 
+                    <!-- Filtro de tipo generado con los datos reales -->
                     <div>
                         <select id="filtroTipo" class="h-9 px-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all">
                             <option value="">Todos los Tipos</option>
-                            <option value="Contado">Contado</option>
-                            <option value="Apartado">Apartado</option>
+                            <% for (String t : tipos) { %>
+                            <option value="<%= esc(t) %>"><%= esc(t) %></option>
+                            <% } %>
                         </select>
                     </div>
                 </div>
@@ -101,54 +154,45 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    <!-- Fila de Ejemplo 1 (Contado / Pagado por completo) -->
+                <%
+                    if (listaVentas != null) {
+                        for (VentaSaldo v : listaVentas) {
+                            String estado = v.getEstadoVenta() == null ? "" : v.getEstadoVenta().trim();
+                            boolean tieneSaldo = v.getSaldoPendiente() > 0.009;
+                            boolean anulada = estado.equalsIgnoreCase("Anulada") || estado.equalsIgnoreCase("Anulado")
+                                    || estado.equalsIgnoreCase("Cancelada");
+                            boolean puedeAbonar = tieneSaldo && !anulada;
+                %>
                     <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="p-3.5 font-bold text-slate-800">#V-012</td>
-                        <td class="p-3.5">02/11/2026</td>
-                        <td class="p-3.5 font-medium text-slate-800">Carlos Martínez</td>
-                        <td class="p-3.5 text-slate-600">Contado</td>
-                        <td class="p-3.5 font-semibold text-slate-800">L. 2,450.00</td>
-                        <td class="p-3.5 font-semibold text-emerald-600">L. 2,450.00</td>
-                        <td class="p-3.5 font-semibold text-slate-500">L. 0.00</td>
+                        <td class="p-3.5 font-bold text-slate-800">#V-<%= String.format("%03d", v.getIdVenta()) %></td>
+                        <td class="p-3.5" data-order="<%= v.getFecha() != null ? v.getFecha().getTime() : 0 %>"><%= v.getFecha() != null ? fmtFecha.format(v.getFecha()) : "—" %></td>
+                        <td class="p-3.5 font-medium text-slate-800"><%= esc(v.getNombreCliente()) %></td>
+                        <td class="p-3.5 text-slate-600"><%= esc(v.getTipo()) %></td>
+                        <td class="p-3.5 font-semibold text-slate-800" data-order="<%= v.getTotal() %>"><%= lempiras(v.getTotal()) %></td>
+                        <td class="p-3.5 font-semibold text-emerald-600" data-order="<%= v.getTotalPagado() %>"><%= lempiras(v.getTotalPagado()) %></td>
+                        <td class="p-3.5 font-semibold <%= tieneSaldo ? "text-amber-600" : "text-slate-500" %>" data-order="<%= v.getSaldoPendiente() %>"><%= lempiras(v.getSaldoPendiente()) %></td>
                         <td class="p-3.5 text-center">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                Pagado
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border <%= badgeClase(estado) %>">
+                                <%= esc(estado) %>
                             </span>
                         </td>
                         <td class="p-3.5 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <button title="Ver Factura" class="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors cursor-pointer">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    <!-- Fila de Ejemplo 2 (Apartado / Con saldo pendiente) -->
-                    <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="p-3.5 font-bold text-slate-800">#V-013</td>
-                        <td class="p-3.5">02/11/2026</td>
-                        <td class="p-3.5 font-medium text-slate-800">Ana Sofía Pineda</td>
-                        <td class="p-3.5 text-slate-600">Apartado</td>
-                        <td class="p-3.5 font-semibold text-slate-800">L. 3,800.00</td>
-                        <td class="p-3.5 font-semibold text-emerald-600">L. 1,500.00</td>
-                        <td class="p-3.5 font-semibold text-amber-600">L. 2,300.00</td>
-                        <td class="p-3.5 text-center">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
-                                Pendiente
-                            </span>
-                        </td>
-                        <td class="p-3.5 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <button title="Registrar Abono / Pago" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+                                <% if (puedeAbonar) { %>
+                                <button type="button" title="Registrar Abono / Pago" data-id="<%= v.getIdVenta() %>" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 </button>
-                                <button title="Ver Factura" class="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors cursor-pointer">
+                                <% } %>
+                                <button type="button" title="Ver Factura" data-id="<%= v.getIdVenta() %>" class="p-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </button>
                             </div>
                         </td>
                     </tr>
+                <%
+                        }
+                    }
+                %>
                 </tbody>
             </table>
         </div>
@@ -172,33 +216,32 @@
         var table = $('#tablaVentas').DataTable({
             dom: 'rt',
             pageLength: 5,
+            order: [[0, 'desc']],
             language: {
                 emptyTable: "No hay registros de ventas o facturación",
                 zeroRecords: "No se encontraron registros coincidentes"
             }
         });
 
-        // Buscador sincronizado
         $('#customSearch').on('keyup', function() {
             table.search(this.value).draw();
         });
 
-        // Filtro por Tipo de Venta (Contado / Apartado) en la columna correspondiente (índice 3)
+        // Filtro por Tipo de Venta (columna 3), coincidencia exacta con regex escapado
         $('#filtroTipo').on('change', function() {
             var val = $(this).val();
-            table.column(3).search(val, false, false).draw();
+            var esc = val ? $.fn.dataTable.util.escapeRegex(val) : '';
+            table.column(3).search(val ? '^\\s*' + esc + '\\s*$' : '', true, false).draw();
         });
 
-        // Selector de cantidad de registros por página
         $('#customPageLength').on('change', function() {
             table.page.len(parseInt($(this).val())).draw();
         });
 
-        // Renderizado dinámico de la barra inferior con Tailwind
         function renderPagination() {
             var info = table.page.info();
-            var infoText = "Mostrando del " + (info.recordsTotal === 0 ? 0 : (info.start + 1)) + 
-                           " al " + info.end + " de un total de " + info.recordsTotal + " ventas";
+            var infoText = "Mostrando del " + (info.recordsDisplay === 0 ? 0 : (info.start + 1)) + 
+                           " al " + info.end + " de un total de " + info.recordsDisplay + " ventas";
             $('#tableInfo').text(infoText);
 
             var paginationHtml = '';
@@ -227,8 +270,7 @@
         renderPagination();
 
         $(document).on('click', '.page-number', function() {
-            var pageIndex = $(this).data('page');
-            table.page(pageIndex).draw('page');
+            table.page($(this).data('page')).draw('page');
         });
         $(document).on('click', '#btnPrev', function() {
             table.page('previous').draw('page');
