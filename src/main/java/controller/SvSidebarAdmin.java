@@ -12,7 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.CitaDetalle;
+import model.InventarioDetalle;
 import dao.CitaDAO;
+import dao.InventarioDAO;
 import java.util.List;
 
 /**
@@ -52,12 +54,20 @@ public class SvSidebarAdmin extends HttpServlet {
                         List<CitaDetalle> listaCitas = citaDao.listarCitasDetalle();
                         request.setAttribute("listaCitas", listaCitas);
                     } catch (Exception e) {
-                        e.printStackTrace(); // Muestra el error exacto en la consola de NetBeans
+                        e.printStackTrace(); 
                         request.setAttribute("listaCitas", new java.util.ArrayList<>()); // Evita nulos
                     }
-    subvista = "/views/components/admin/citas.jsp";
-    break;
+                 subvista = "/views/components/admin/citas.jsp";
+                break;
             case "inventario":
+                try {
+                        InventarioDAO inventarioDao = new InventarioDAO();
+                        List<InventarioDetalle> listaInventario = inventarioDao.listarInventarioDetalle();
+                        request.setAttribute("listaInventario", listaInventario);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        request.setAttribute("listaInventario", new java.util.ArrayList<>());
+                    }
                 subvista = "/views/components/admin/inventario.jsp";
                 break;
             case "ventas":
